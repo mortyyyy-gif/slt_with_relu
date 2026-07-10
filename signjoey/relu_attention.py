@@ -129,7 +129,13 @@ class ReLUFormerAttention(nn.Module):
         n = n.clamp(min=1.0)  # avoid division by zero for fully-padded rows
 
         gamma = torch.exp(self.log_gamma).view(1, num_heads, 1, 1)
-        denom = gamma * torch.sqrt(n / 2.0).view(batch_size, 1, q_len, 1)
+        # n has shape (mask_batch, q_len), where mask_batch is either 1
+        # (e.g. the dummy causal-only mask used during greedy/beam-search
+        # decoding, see search.py) or batch_size. Use unsqueeze + implicit
+        # broadcasting here instead of a hard `.view(batch_size, ...)`,
+        # since the latter requires exactly batch_size * q_len elements
+        # and crashes whenever mask_batch == 1 != batch_size.
+        denom = gamma * torch.sqrt(n / 2.0).unsqueeze(1).unsqueeze(-1)
         weights = relu_scores / denom
 
         if self.training:
