@@ -44,24 +44,35 @@ def bleu(references, hypotheses):
 
 def token_accuracy(references, hypotheses, level="word"):
     """
-    Compute the accuracy of hypothesis tokens: correct tokens / all tokens
-    Tokens are correct if they appear in the same position in the reference.
+    Compute token accuracy:
+    correct predicted tokens / total predicted tokens
 
-    :param hypotheses: list of hypotheses (strings)
-    :param references: list of references (strings)
-    :param level: segmentation level, either "word", "bpe", or "char"
-    :return:
+    :param hypotheses: list of hypothesis strings
+    :param references: list of reference strings
+    :param level: "word", "bpe" or "char"
+    :return: accuracy in percentage
     """
+
     correct_tokens = 0
     all_tokens = 0
-    split_char = " " if level in ["word", "bpe"] else ""
+
     assert len(hypotheses) == len(references)
+
     for hyp, ref in zip(hypotheses, references):
-        all_tokens += len(hyp)
-        for h_i, r_i in zip(hyp.split(split_char), ref.split(split_char)):
-            # min(len(h), len(r)) tokens considered
-            if h_i == r_i:
+
+        if level in ["word", "bpe"]:
+            hyp_tokens = hyp.split()
+            ref_tokens = ref.split()
+        else:
+            hyp_tokens = list(hyp)
+            ref_tokens = list(ref)
+
+        all_tokens += len(hyp_tokens)
+
+        for h_tok, r_tok in zip(hyp_tokens, ref_tokens):
+            if h_tok == r_tok:
                 correct_tokens += 1
+
     return (correct_tokens / all_tokens) * 100 if all_tokens > 0 else 0.0
 
 

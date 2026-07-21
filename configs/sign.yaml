@@ -1,17 +1,17 @@
 name: sign_experiment
 data:
-  data_path: ./data/
-  version: phoenix_2014_trans
+  data_path: ./dataset
+  version: persian
   sgn: sign
   txt: text
   gls: gloss
-  train: PHOENIX2014T/phoenix14t.pami0.train
-  dev: PHOENIX2014T/phoenix14t.pami0.dev
-  test: PHOENIX2014T/phoenix14t.pami0.test
-  feature_size: 1024
+  train: train.pkl.gz
+  dev: dev.pkl.gz
+  test: test.pkl.gz
+  feature_size: 1662
   level: word
-  txt_lowercase: true
-  max_sent_length: 400
+  txt_lowercase: false
+  max_sent_length: 50
   random_train_subset: -1
   random_dev_subset: -1
 testing:
@@ -57,9 +57,9 @@ training:
   eval_metric: bleu
   optimizer: adam
   learning_rate: 0.001
-  batch_size: 32
+  batch_size: 4
   num_valid_log: 5
-  epochs: 500000
+  epochs: 50
   early_stopping_metric: eval_metric
   batch_type: sentence
   translation_normalization: batch
@@ -68,12 +68,12 @@ training:
   eval_translation_beam_alpha: -1
   overwrite: true
   shuffle: true
-  use_cuda: true
+  use_cuda: false
   translation_max_output_length: 30
   keep_last_ckpts: 1
   batch_multiplier: 1
-  logging_freq: 100
-  validation_freq: 100
+  logging_freq: 1
+  validation_freq: 5
   betas:
     - 0.9
     - 0.998
@@ -84,6 +84,7 @@ training:
   decrease_factor: 0.7
   label_smoothing: 0.1
 model:
+  model_dir: "./checkpoints"
   initializer: xavier
   bias_initializer: zeros
   init_gain: 1.0
@@ -93,28 +94,28 @@ model:
   encoder:
     type: transformer
     attention_type: reluformer
-    num_layers: 3
+    num_layers: 2
     num_heads: 8
     embeddings:
       embedding_dim: 512
       scale: false
-      dropout: 0.15
+      dropout: 0.3
       norm_type: batch
       activation_type: softsign
     hidden_size: 512
     ff_size: 2048
-    dropout: 0.15
+    dropout: 0.3
   decoder:
     type: transformer
     attention_type: reluformer
-    num_layers: 3
+    num_layers: 2
     num_heads: 8
     embeddings:
       embedding_dim: 512
       scale: false
-      dropout: 0.15
+      dropout: 0.3
       norm_type: batch
       activation_type: softsign
     hidden_size: 512
     ff_size: 2048
-    dropout: 0.15
+    dropout: 0.3

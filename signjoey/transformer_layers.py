@@ -281,7 +281,7 @@ class TransformerDecoderLayer(nn.Module):
         ff_size: int = 0,
         num_heads: int = 0,
         dropout: float = 0.1,
-        attention_type: str = "reluformer",
+        attention_type: str = "softmax",
     ):
         """
         Represents a single Transformer decoder layer.

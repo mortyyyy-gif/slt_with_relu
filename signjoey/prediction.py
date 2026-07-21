@@ -27,6 +27,7 @@ from signjoey.phoenix_utils.phoenix_cleanup import (
     clean_phoenix_2014,
     clean_phoenix_2014_trans,
 )
+from signjoey.phoenix_utils.prediction_cleanup import clean_prediction
 
 
 # pylint: disable=too-many-arguments,too-many-locals,no-member
@@ -201,11 +202,15 @@ def validate_on_data(
             # Gloss clean-up function
             if dataset_version == "phoenix_2014_trans":
                 gls_cln_fn = clean_phoenix_2014_trans
+
             elif dataset_version == "phoenix_2014":
                 gls_cln_fn = clean_phoenix_2014
+
+            elif dataset_version == "persian":
+                gls_cln_fn = clean_prediction
+
             else:
                 raise ValueError("Unknown Dataset Version: " + dataset_version)
-
             # Construct gloss sequences for metrics
             gls_ref = [gls_cln_fn(" ".join(t)) for t in data.gls]
             gls_hyp = [gls_cln_fn(" ".join(t)) for t in decoded_gls]
