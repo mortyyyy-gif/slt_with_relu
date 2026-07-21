@@ -84,7 +84,7 @@ training:
   decrease_factor: 0.7
   label_smoothing: 0.1
 model:
-  model_dir: "./checkpoints"
+  # model_dir: "./checkpoints"
   initializer: xavier
   bias_initializer: zeros
   init_gain: 1.0
